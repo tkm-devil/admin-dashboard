@@ -4,13 +4,13 @@
 import { cn } from '@/lib/utils'
 import { Button } from '@/components/ui/button'
 import { ScrollArea } from '@/components/ui/scroll-area'
-import { 
-  Home, 
-  Users, 
-  Settings, 
-  BarChart3, 
-  Package, 
-  FileText, 
+import {
+  Home,
+  Users,
+  Settings,
+  BarChart3,
+  Package,
+  FileText,
   Calendar,
   MessageSquare,
   ChevronLeft,
@@ -22,6 +22,10 @@ import { usePathname } from 'next/navigation'
 interface SidebarProps {
   isCollapsed: boolean
   onToggle: () => void
+  user: {
+    email: string
+    full_name?: string
+  } | null
 }
 
 const sidebarItems = [
@@ -67,8 +71,9 @@ const sidebarItems = [
   }
 ]
 
-export function Sidebar({ isCollapsed, onToggle }: SidebarProps) {
+export function Sidebar({ isCollapsed, onToggle, user }: SidebarProps) {
   const pathname = usePathname()
+  const initials = (user?.full_name || user?.email || 'U')[0]?.toUpperCase()
 
   return (
     <div className={cn(
@@ -105,7 +110,7 @@ export function Sidebar({ isCollapsed, onToggle }: SidebarProps) {
           {sidebarItems.map((item) => {
             const Icon = item.icon
             const isActive = pathname === item.href
-            
+
             return (
               <Link key={item.href} href={item.href}>
                 <Button
@@ -133,12 +138,16 @@ export function Sidebar({ isCollapsed, onToggle }: SidebarProps) {
           isCollapsed && "justify-center"
         )}>
           <div className="w-8 h-8 bg-muted rounded-full flex items-center justify-center">
-            <span className="text-sm font-medium">JD</span>
+            <span className="text-sm font-medium">{initials}</span>
           </div>
-          {!isCollapsed && (
+          {!isCollapsed && user && (
             <div className="flex-1 min-w-0">
-              <p className="text-sm font-medium truncate">John Doe</p>
-              <p className="text-xs text-muted-foreground truncate">john@example.com</p>
+              <p className="text-sm font-medium truncate">
+                {user.full_name || 'No name'}
+              </p>
+              <p className="text-xs text-muted-foreground truncate">
+                {user.email || 'No email'}
+              </p>
             </div>
           )}
         </div>

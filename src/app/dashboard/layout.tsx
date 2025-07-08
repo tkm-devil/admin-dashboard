@@ -1,22 +1,45 @@
 // src/app/dashboard/layout.tsx
-import { Shell } from '@/components/layout/shell'
-import { ThemeProvider } from '@/components/theme-provider'
+import { createServerSupabaseClient } from "@/lib/supabase/server";
+import { Shell } from "@/components/layout/shell";
+import type { ReactNode } from "react";
 
-export default function DashboardLayout({
+export default async function DashboardLayout({
   children,
 }: {
-  children: React.ReactNode
+  children: ReactNode;
 }) {
+  const supabase = await createServerSupabaseClient();
+
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+
+  let profile: { full_name?: string } | null = null;
+
+  if (user?.id) {
+    const { data } = await supabase
+      .from("profiles")
+      .select("full_name")
+      .eq("id", user.id)
+      .single();
+
+    profile = {
+      full_name: data?.full_name ?? undefined,
+    };
+  }
+
   return (
-    <ThemeProvider
-      attribute="class"
-      defaultTheme="system"
-      enableSystem
-      disableTransitionOnChange
+    <Shell
+      user={
+        user
+          ? {
+              email: user.email!,
+              full_name: profile?.full_name,
+            }
+          : null
+      }
     >
-      <Shell>
-        {children}
-      </Shell>
-    </ThemeProvider>
-  )
+      {children}
+    </Shell>
+  );
 }

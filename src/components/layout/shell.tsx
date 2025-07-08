@@ -8,9 +8,13 @@ import { cn } from '@/lib/utils'
 
 interface ShellProps {
   children: React.ReactNode
+  user: {
+    email: string
+    full_name?: string
+  } | null
 }
 
-export function Shell({ children }: ShellProps) {
+export function Shell({ children, user }: ShellProps) {
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false)
 
   const toggleSidebar = () => {
@@ -27,6 +31,7 @@ export function Shell({ children }: ShellProps) {
         <Sidebar 
           isCollapsed={sidebarCollapsed} 
           onToggle={toggleSidebar}
+          user={user}
         />
       </aside>
 
@@ -36,6 +41,7 @@ export function Shell({ children }: ShellProps) {
         <Topbar 
           onMenuClick={toggleSidebar}
           showMenuButton={true}
+          user={user}
         />
 
         {/* Page Content */}
@@ -56,6 +62,7 @@ export function Shell({ children }: ShellProps) {
             <Sidebar 
               isCollapsed={false} 
               onToggle={toggleSidebar}
+              user={user}
             />
           </aside>
         </div>
