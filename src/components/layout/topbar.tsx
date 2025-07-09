@@ -1,8 +1,8 @@
 // src/components/layout/topbar.tsx
-'use client'
+"use client";
 
-import { Button } from '@/components/ui/button'
-import { Input } from '@/components/ui/input'
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -10,8 +10,8 @@ import {
   DropdownMenuLabel,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
-} from '@/components/ui/dropdown-menu'
-import { Badge } from '@/components/ui/badge'
+} from "@/components/ui/dropdown-menu";
+import { Badge } from "@/components/ui/badge";
 import {
   Search,
   Bell,
@@ -20,31 +20,36 @@ import {
   LogOut,
   Moon,
   Sun,
-  Menu
-} from 'lucide-react'
-import { useTheme } from 'next-themes'
-import { useRouter } from 'next/navigation'
+  Menu,
+} from "lucide-react";
+import { useTheme } from "next-themes";
+import { useRouter } from "next/navigation";
+import { ThemeToggle } from "./theme-toggle";
 
 interface TopbarProps {
-  onMenuClick: () => void
-  showMenuButton?: boolean
+  onMenuClick: () => void;
+  showMenuButton?: boolean;
   user: {
-    email: string
-    full_name?: string
-  } | null
+    email: string;
+    full_name?: string;
+  } | null;
 }
 
-export function Topbar({ onMenuClick, showMenuButton = false, user }: TopbarProps) {
-  const { theme, setTheme } = useTheme()
-  const router = useRouter()
+export function Topbar({
+  onMenuClick,
+  showMenuButton = false,
+  user,
+}: TopbarProps) {
+  const { theme, setTheme } = useTheme();
+  const router = useRouter();
 
   const handleLogout = async () => {
-    const { supabase } = await import('@/lib/supabase/client')
-    await supabase.auth.signOut()
-    router.push('/login')
-  }
+    const { supabase } = await import("@/lib/supabase/client");
+    await supabase.auth.signOut();
+    router.push("/login");
+  };
 
-  const initials = (user?.full_name || user?.email || 'U')[0]?.toUpperCase()
+  const initials = (user?.full_name || user?.email || "U")[0]?.toUpperCase();
 
   return (
     <header className="flex h-14 items-center justify-between border-b bg-background px-4 lg:px-6">
@@ -64,26 +69,14 @@ export function Topbar({ onMenuClick, showMenuButton = false, user }: TopbarProp
         {/* Search */}
         <div className="relative w-64 md:w-80">
           <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
-          <Input
-            placeholder="Search..."
-            className="pl-10 pr-4"
-          />
+          <Input placeholder="Search..." className="pl-10 pr-4" />
         </div>
       </div>
 
       {/* Right Section */}
       <div className="flex items-center space-x-2">
         {/* Theme Toggle */}
-        <Button
-          variant="ghost"
-          size="icon"
-          onClick={() => setTheme(theme === 'dark' ? 'light' : 'dark')}
-          className="h-9 w-9"
-        >
-          <Sun className="h-4 w-4 rotate-0 scale-100 transition-all dark:-rotate-90 dark:scale-0" />
-          <Moon className="absolute h-4 w-4 rotate-90 scale-0 transition-all dark:rotate-0 dark:scale-100" />
-          <span className="sr-only">Toggle theme</span>
-        </Button>
+        <ThemeToggle />
 
         {/* Notifications */}
         <DropdownMenu>
@@ -115,7 +108,9 @@ export function Topbar({ onMenuClick, showMenuButton = false, user }: TopbarProp
             </DropdownMenuItem>
             <DropdownMenuItem>
               <div className="flex flex-col space-y-1">
-                <p className="text-sm font-medium">System maintenance scheduled</p>
+                <p className="text-sm font-medium">
+                  System maintenance scheduled
+                </p>
                 <p className="text-xs text-muted-foreground">1 hour ago</p>
               </div>
             </DropdownMenuItem>
@@ -135,10 +130,10 @@ export function Topbar({ onMenuClick, showMenuButton = false, user }: TopbarProp
             <DropdownMenuLabel>
               <div className="flex flex-col space-y-1">
                 <p className="text-sm font-medium">
-                  {user?.full_name ?? 'No name'}
+                  {user?.full_name ?? "No name"}
                 </p>
                 <p className="text-xs text-muted-foreground">
-                  {user?.email ?? 'No email'}
+                  {user?.email ?? "No email"}
                 </p>
               </div>
             </DropdownMenuLabel>
@@ -152,10 +147,7 @@ export function Topbar({ onMenuClick, showMenuButton = false, user }: TopbarProp
               <span>Settings</span>
             </DropdownMenuItem>
             <DropdownMenuSeparator />
-            <DropdownMenuItem
-              className="text-red-600"
-              onClick={handleLogout}
-            >
+            <DropdownMenuItem className="text-red-600" onClick={handleLogout}>
               <LogOut className="mr-2 h-4 w-4" />
               <span>Log out</span>
             </DropdownMenuItem>
@@ -163,5 +155,5 @@ export function Topbar({ onMenuClick, showMenuButton = false, user }: TopbarProp
         </DropdownMenu>
       </div>
     </header>
-  )
+  );
 }
